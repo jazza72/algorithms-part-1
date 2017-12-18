@@ -9,11 +9,11 @@ import edu.princeton.cs.algs4.StdOut;
  * 
  * @author jameswilson
  */
-public class Deque<E> implements Iterable<E> {
+public class Deque<Item> implements Iterable<Item> {
 
-  Node first;
-  Node last;
-  int size = 0;
+  private Node<Item> first;
+  private Node<Item> last;
+  private int size = 0;
 
   /**
    * Construct empty Deque
@@ -44,17 +44,17 @@ public class Deque<E> implements Iterable<E> {
    * 
    * @param item
    */
-  public void addFirst(E item) {
+  public void addFirst(Item item) {
 
     if (item == null) {
       throw new IllegalArgumentException();
     }
 
     if (first == null) {
-      first = new Node(item);
+      first = new Node<Item>(item);
     } else {
-      Node temp = first;
-      first = new Node(item);
+      Node<Item> temp = first;
+      first = new Node<Item>(item);
       first.next = temp;
       temp.prev = first;
     }
@@ -72,17 +72,17 @@ public class Deque<E> implements Iterable<E> {
    * 
    * @param item
    */
-  public void addLast(E item) {
+  public void addLast(Item item) {
 
     if (item == null) {
       throw new IllegalArgumentException();
     }
 
     if (last == null) {
-      last = new Node(item);
+      last = new Node<Item>(item);
     } else {
-      Node temp = last;
-      last = new Node(item);
+      Node<Item> temp = last;
+      last = new Node<Item>(item);
       temp.next = last;
       last.prev = temp;
     }
@@ -100,13 +100,13 @@ public class Deque<E> implements Iterable<E> {
    * 
    * @return E
    */
-  public E removeFirst() {
+  public Item removeFirst() {
 
     if (size == 0) {
       throw new NoSuchElementException();
     }
 
-    Node temp = first;
+    Node<Item> temp = first;
     first = temp.next;
     
     if (first != null)
@@ -119,7 +119,7 @@ public class Deque<E> implements Iterable<E> {
     if (size == 0)
       last = first;
 
-    return (E) temp.get();
+    return temp.get();
   }
 
   /**
@@ -127,13 +127,13 @@ public class Deque<E> implements Iterable<E> {
    * 
    * @return e
    */
-  public E removeLast() {
+  public Item removeLast() {
 
     if (size == 0) {
       throw new NoSuchElementException();
     }
 
-    Node temp = last;
+    Node<Item> temp = last;
     last = temp.prev;
     
     if (last != null)
@@ -146,7 +146,7 @@ public class Deque<E> implements Iterable<E> {
     if (size == 0)
       first = last;
 
-    return (E) temp.get();
+    return temp.get();
   }
 
   /**
@@ -154,11 +154,11 @@ public class Deque<E> implements Iterable<E> {
    * 
    * @return iterator
    */
-  public Iterator<E> iterator() {
+  public Iterator<Item> iterator() {
 
-    Iterator<E> iter = new Iterator<E>() {
+    Iterator<Item> iter = new Iterator<Item>() {
 
-      Node current;
+      Node<Item> current;
 
       @Override
       public boolean hasNext() {
@@ -178,14 +178,14 @@ public class Deque<E> implements Iterable<E> {
       }
 
       @Override
-      public E next() {
+      public Item next() {
         
         if (current == null && first != null) {
           current = first;
-          return (E) current.data;
+          return current.data;
         } else if (current != null) {
            current = current.next;
-           return (E) current.data;
+           return current.data;
         } else {
           throw new NoSuchElementException();
         }
@@ -197,17 +197,18 @@ public class Deque<E> implements Iterable<E> {
 
   }
 
-  private class Node<E> {
+  //@SuppressWarnings("hiding")
+private class Node<Item> {
 
-    E data;
-    Node next;
-    Node prev;
+    Item data;
+    Node<Item> next;
+    Node<Item> prev;
 
-    Node(E data) {
+    Node(Item data) {
       this.data = data;
     }
 
-    E get() {
+    Item get() {
       return data;
     }
 
@@ -229,13 +230,13 @@ public class Deque<E> implements Iterable<E> {
     q.removeLast();
     q.removeFirst();
     
-    Iterator i = q.iterator();
+    Iterator<String> i = q.iterator();
     
-    try {
+    //try {
       i.remove();
-    } catch (Exception ex) {
-      StdOut.print("Exeption caught: " + ex.getClass().getName());
-    }
+    //} catch (Exception ex) {
+    //  StdOut.print("Exeption caught: " + ex.getClass().getName());
+    //}
     
     for (String s : q)
       StdOut.print("\n" + s);

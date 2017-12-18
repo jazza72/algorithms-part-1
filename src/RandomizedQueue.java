@@ -12,18 +12,18 @@ import edu.princeton.cs.algs4.StdRandom;
  * @author jameswilson
  *
  */
-public class RandomizedQueue<E> implements Iterable<E>{
+public class RandomizedQueue<Item> implements Iterable<Item>{
 
   private int size;
-  private E[] queue;
+  private Item[] queue;
   
   /**
    * NoArg Constructor
    */
-  @SuppressWarnings("unchecked")
+  //@SuppressWarnings("unchecked")
   public RandomizedQueue() {
     //create array for queue
-    queue = (E[]) new Object[2];
+    queue = (Item[]) new Object[2];
   }
 
   public boolean isEmpty() {
@@ -40,7 +40,7 @@ public class RandomizedQueue<E> implements Iterable<E>{
    * Adds an element E onto the tail of the queue
    * @param data
    */
-  public void enqueue(E data) {
+  public void enqueue(Item data) {
     
     if (data == null)
       throw new IllegalArgumentException();
@@ -61,7 +61,7 @@ public class RandomizedQueue<E> implements Iterable<E>{
    * Remove random element from queue
    * @return int - the random element selected
    */
-  public E dequeue() {
+  public Item dequeue() {
     
     //if size<1 
     if (size<1) {
@@ -72,7 +72,7 @@ public class RandomizedQueue<E> implements Iterable<E>{
     int index = randomIndex();
     
     //set element to null
-    E element = queue[index];
+    Item element = queue[index];
     queue[index] = queue[size-1];
     queue[size-1] = null;
     
@@ -89,6 +89,14 @@ public class RandomizedQueue<E> implements Iterable<E>{
     
   }
   
+  public Item sample() {
+	  if (size < 1) {
+		  throw new NoSuchElementException();
+	  }
+	  
+	  return queue[randomIndex()];
+  }
+  
   private int randomIndex() {
     return StdRandom.uniform(0, size);    
   }
@@ -99,8 +107,8 @@ public class RandomizedQueue<E> implements Iterable<E>{
    */
   private void resize (int factor) {
     
-    @SuppressWarnings("unchecked")
-    E[] resized = (E[]) new Object[factor];
+    //@SuppressWarnings("unchecked")
+    Item[] resized = (Item[]) new Object[factor];
     
     //now copy elements from old to new queue
     for (int i = 0; i<size; i++) {
@@ -113,22 +121,22 @@ public class RandomizedQueue<E> implements Iterable<E>{
   }
 
   @Override
-  public Iterator<E> iterator() {
+  public Iterator<Item> iterator() {
     
     return new RandomizedQueueIterator();
 
   }
-  class RandomizedQueueIterator implements Iterator<E>{
+  private class RandomizedQueueIterator implements Iterator<Item>{
     
 
-    E[] items;
+    Item[] items;
     int current = 0;
     
-    @SuppressWarnings("unchecked")
+    //@SuppressWarnings("unchecked")
     public RandomizedQueueIterator() {
       
       //copy over main queue array
-      items = (E[]) new Object[size];
+      items = (Item[]) new Object[size];
       
       for (int i=0; i<size; i++) {
         items[i] = queue[i];
@@ -151,8 +159,13 @@ public class RandomizedQueue<E> implements Iterable<E>{
     }
 
     @Override
-    public E next() {
-      return items[current++];
+    public Item next() {
+    		
+    		if (!hasNext()) {
+    			throw new NoSuchElementException();
+    		}
+    		
+      return items[++current];
     }
        
     
