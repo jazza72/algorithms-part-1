@@ -124,5 +124,10 @@ class TestRandomizedQueue {
     assertTrue(iteratorA.next()!=iteratorB.next());
 
   }
+  
+  @Test
+  void testSample() {
+	  
+  }
 
 }

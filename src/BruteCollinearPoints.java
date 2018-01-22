@@ -75,37 +75,40 @@ public class BruteCollinearPoints {
      
    }    
    
-   public static Point[] extractPointsFromSegment () {
-     
-     Point[] pointsForSegment = new Point[2];
-     
-     //the regex pattern to match
-     //(4872, 22890) -> (5424, 24273)
-     //Pattern pattern = Pattern.compile("\\((\\d+)\\W\\s(\\d+)\\)");
-     Pattern pattern = Pattern.compile("\\((\\d+)\\W\\s(\\d+)\\)\\s\\W+\\s\\((\\d+)\\W\\s(\\d+)\\)");
-     Matcher matcher = pattern.matcher("(4872, 22890) -> (5424, 24273)");
-
-     matcher.matches();
-     
-     //instantiate the points the points 
-     pointsForSegment[0] = new Point (Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))); 
-     pointsForSegment[1] = new Point (Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4))); 
-     
-     
-     return pointsForSegment;
-     
-   }
-   
-//   private boolean isSubSegment(LineSegment existing, LineSegment new) {
+//   private Point[] extractPointsFromSegment (LineSegment segment) {
 //     
-//     Regex rg = "\\w";
+//     Point[] pointsForSegment = new Point[2];
 //     
-//     Pattern.
+//     //the regex pattern to match
+//     //(4872, 22890) -> (5424, 24273)
+//     Pattern pattern = Pattern.compile("\\((\\d+)\\W\\s(\\d+)\\)\\s\\W+\\s\\((\\d+)\\W\\s(\\d+)\\)");
+//     Matcher matcher = pattern.matcher(segment.toString());
+//
+//     matcher.matches();
+//     
+//     //instantiate the points the points 
+//     pointsForSegment[0] = new Point (Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))); 
+//     pointsForSegment[1] = new Point (Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4))); 
 //     
 //     
-//     if (existing.)
-//    
+//     return pointsForSegment;
+//     
 //   }
+//   
+//  private boolean isSubSegment(LineSegment existing, LineSegment current) {
+//    
+//    Point[] existingAsPoints = this.extractPointsFromSegment(existing);
+//    Point[] currentAsPoints = this.extractPointsFromSegment(current);
+//    
+//    //compare point ranges for overlap
+//    if (existingAsPoints[0].compareTo(currentAsPoints[0]) <= 0
+//        && existingAsPoints[0].compareTo(currentAsPoints[0]) >= 0) {
+//      return true;
+//    } else {
+//      return false;
+//    }
+//   
+//  }
    
    public static void main(String[] args) {
 
@@ -136,7 +139,7 @@ public class BruteCollinearPoints {
 //       }
 //       StdDraw.show();
 //   }
-     BruteCollinearPoints.extractPointsFromSegment();
+//     BruteCollinearPoints.extractPointsFromSegment();
 
   }
      
