@@ -11,8 +11,8 @@ import edu.princeton.cs.algs4.StdOut;
  */
 public class Deque<E> implements Iterable<E> {
 
-  Node first;
-  Node last;
+  Node<E> first;
+  Node<E> last;
   int size = 0;
 
   /**
@@ -51,10 +51,10 @@ public class Deque<E> implements Iterable<E> {
     }
 
     if (first == null) {
-      first = new Node(item);
+      first = new Node<E>(item);
     } else {
-      Node temp = first;
-      first = new Node(item);
+      Node<E> temp = first;
+      first = new Node<E>(item);
       first.next = temp;
       temp.prev = first;
     }
@@ -79,10 +79,10 @@ public class Deque<E> implements Iterable<E> {
     }
 
     if (last == null) {
-      last = new Node(item);
+      last = new Node<E>(item);
     } else {
-      Node temp = last;
-      last = new Node(item);
+      Node<E> temp = last;
+      last = new Node<E>(item);
       temp.next = last;
       last.prev = temp;
     }
@@ -106,7 +106,7 @@ public class Deque<E> implements Iterable<E> {
       throw new NoSuchElementException();
     }
 
-    Node temp = first;
+    Node<E> temp = first;
     first = temp.next;
     
     if (first != null)
@@ -133,7 +133,7 @@ public class Deque<E> implements Iterable<E> {
       throw new NoSuchElementException();
     }
 
-    Node temp = last;
+    Node<E> temp = last;
     last = temp.prev;
     
     if (last != null)
@@ -158,7 +158,7 @@ public class Deque<E> implements Iterable<E> {
 
     Iterator<E> iter = new Iterator<E>() {
 
-      Node current;
+      Node<E> current;
 
       @Override
       public boolean hasNext() {
@@ -197,17 +197,17 @@ public class Deque<E> implements Iterable<E> {
 
   }
 
-  private class Node<E> {
+  private class Node<V> {
 
-    E data;
-    Node next;
-    Node prev;
+    V data;
+    Node<V> next;
+    Node<V> prev;
 
-    Node(E data) {
+    Node(V data) {
       this.data = data;
     }
 
-    E get() {
+    V get() {
       return data;
     }
 
@@ -229,7 +229,7 @@ public class Deque<E> implements Iterable<E> {
     q.removeLast();
     q.removeFirst();
     
-    Iterator i = q.iterator();
+    Iterator<String> i = q.iterator();
     
     try {
       i.remove();
