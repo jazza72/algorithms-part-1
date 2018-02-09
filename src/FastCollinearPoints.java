@@ -60,13 +60,13 @@ public class FastCollinearPoints {
        
        //debugging - need to look at the sorted slope orders
        //MAYBE SKIP wgeb i+1==points.length making a Point[0] length array
-       double[] sortOrderCopyDEBUG1 = new double[points.length-(i+1)];
-       
-       for (int x = 0; x<sortOrderCopyDEBUG1.length; x++) {
-         
-         sortOrderCopyDEBUG1[x] = points[i].slopeTo(points[i+1+x]);
-         
-       }
+//       double[] sortOrderCopyDEBUG1 = new double[points.length-(i+1)];
+//       
+//       for (int x = 0; x<sortOrderCopyDEBUG1.length; x++) {
+//         
+//         sortOrderCopyDEBUG1[x] = points[i].slopeTo(points[i+1+x]);
+//         
+//       }
        
        //now go through the sub-array, comparing the slopeTo() values 
        //from the pivot point [i] with each point in the subarray
@@ -90,6 +90,14 @@ public class FastCollinearPoints {
              Point[] pointMatches = new Point[count+2];
              pointMatches[0] = points[i];
              
+             
+             //now compare the point[i] value with the point[j] values
+             //if point[i] is smallest of all the values of the matching slopeTo() points)
+             //then add this segment - since if point[i] is lowest point then it is not overlapping
+             //with any other segments
+             
+             boolean addSegment = false;
+             
              for (int p=0; p<=count; p++) {
                pointMatches[p+1] = points[j-p];
              }
@@ -97,9 +105,14 @@ public class FastCollinearPoints {
               //now sort the pointMatches array
              Arrays.sort(pointMatches);
              
-             segments.add(new LineSegment(pointMatches[0], pointMatches[pointMatches.length-1]));
-             numSegments++;        
-             
+             //check if the base point is less that the first point in the sorted array
+             //and only add it if it is
+            if (points[i].compareTo(pointMatches[0]) <= 0) {
+
+              segments.add(new LineSegment(pointMatches[0], pointMatches[pointMatches.length - 1]));
+              numSegments++;
+
+            }
            }
            
            count = 0;

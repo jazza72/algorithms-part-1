@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
@@ -75,40 +73,7 @@ public class BruteCollinearPoints {
      
    }    
    
-//   private Point[] extractPointsFromSegment (LineSegment segment) {
-//     
-//     Point[] pointsForSegment = new Point[2];
-//     
-//     //the regex pattern to match
-//     //(4872, 22890) -> (5424, 24273)
-//     Pattern pattern = Pattern.compile("\\((\\d+)\\W\\s(\\d+)\\)\\s\\W+\\s\\((\\d+)\\W\\s(\\d+)\\)");
-//     Matcher matcher = pattern.matcher(segment.toString());
-//
-//     matcher.matches();
-//     
-//     //instantiate the points the points 
-//     pointsForSegment[0] = new Point (Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))); 
-//     pointsForSegment[1] = new Point (Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4))); 
-//     
-//     
-//     return pointsForSegment;
-//     
-//   }
-//   
-//  private boolean isSubSegment(LineSegment existing, LineSegment current) {
-//    
-//    Point[] existingAsPoints = this.extractPointsFromSegment(existing);
-//    Point[] currentAsPoints = this.extractPointsFromSegment(current);
-//    
-//    //compare point ranges for overlap
-//    if (existingAsPoints[0].compareTo(currentAsPoints[0]) <= 0
-//        && existingAsPoints[0].compareTo(currentAsPoints[0]) >= 0) {
-//      return true;
-//    } else {
-//      return false;
-//    }
-//   
-//  }
+
    
    public static void main(String[] args) {
 
