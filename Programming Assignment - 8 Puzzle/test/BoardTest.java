@@ -152,7 +152,7 @@ class BoardTest {
   @Test
   final void testTwin() {
     Board a = boardA.twin();
-    System.out.println("here");
+    //System.out.println("here");
   }
 
   /**

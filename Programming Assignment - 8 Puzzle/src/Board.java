@@ -12,14 +12,15 @@ import edu.princeton.cs.algs4.StdRandom;
  */
 public class Board {
 
-  public final int[] gridAsArray;
+  private final int[] gridAsArray;
   private final int dimension;
   private int hamming;
   private int manhattan;
 
   // static variable to represent goal Board state
   // can be used in the isGoal() method
-  private static Board goalBoard;
+  private Board goalBoard;
+  private Board twinBoard;
 
   /**
    * Construct a board from an n-by-n array of blocks (where blocks[i][j] = block in row i, column
@@ -37,7 +38,7 @@ public class Board {
     if (dimension == 0)
       throw new IllegalArgumentException("Argument to constructor may not be zero length array");
 
-    gridAsArray = Board.flattenGrid(blocks);   
+    gridAsArray = Board.flattenGrid(blocks);
   }
 
   /**
@@ -47,13 +48,13 @@ public class Board {
    *          - the grid passed from the main public constructor
    */
   private void generateGoalBoard(int[] flatArray) {
-    
+
     // generate the goal grid state from the grid on this board
     // copy and sort 1D array
     int[] arrCopy = Arrays.copyOf(flatArray, flatArray.length);
-    
+
     Arrays.sort(arrCopy);
-    
+
     // now reconstruct the 2D array
     // now put it back into a 2D array
     int[][] goalGrid = new int[dimension][dimension];
@@ -96,46 +97,44 @@ public class Board {
    * @return hamming priority
    */
   public int hamming() {
-   
-    int count = 0;
-    
-    //only do this once and store result
-    if (this.hamming == 0 && !this.isGoal())
-    {
-      //calculate hamming  
-      for (int i=0; i<gridAsArray.length; i++) {
+
+    // only do this once and store result
+    if (this.hamming == 0 && !this.isGoal()) {
+      int count = 0;
+
+      // calculate hamming
+      for (int i = 0; i < gridAsArray.length; i++) {
         if (goalBoard.gridAsArray[i] != 0 && (goalBoard.gridAsArray[i] != this.gridAsArray[i])) {
           count++;
         }
       }
+      this.hamming = count;
     }
-    
-    this.hamming = count;
-    
+
     return hamming;
   }
-  
+
   /**
    * Helper function to convert 1D arrays to 2D arrays
    * 
-   * @param flatArray - array to convert to grid
+   * @param flatArray
+   *          - array to convert to grid
    * @return int[] - 1D array
    */
   private static int[][] inflateArray(int[] flatArray) {
 
-    int dim = (int) Math.sqrt((double)flatArray.length);
-    
+    int dim = (int) Math.sqrt((double) flatArray.length);
+
     int[][] grid = new int[dim][dim];
 
     for (int i = 0; i < flatArray.length; i++) {
       // index arithmetic - subtract 1 to access 0th element of sorted goal grid
-      grid[i/dim][i%dim] = flatArray[i];
+      grid[i / dim][i % dim] = flatArray[i];
     }
 
     return grid;
   }
-  
-  
+
   /**
    * Helper function to convert 2D arrays to 1D arrays
    * 
@@ -144,7 +143,7 @@ public class Board {
   private static int[] flattenGrid(int[][] grid) {
     // 1D array to hold values from 2D array
     int dim = grid.length;
-    
+
     int[] array = new int[(int) Math.pow(dim, 2)];
 
     if (grid != null && grid.length != 0 && grid[0].length != 0) {
@@ -176,50 +175,50 @@ public class Board {
    * @return manhattan priority
    */
   public int manhattan() {
-    //some amount of array index arithmetic required here
-    //go through each element the gaol array, if the current board is not correct 
-    //for the element, locate the element in the current board array
-    int moves = 0;
-    
-    //only do this once and store result
-    if (this.manhattan == 0 && !this.isGoal())
-    {
-      //calculate hamming  
-      for (int i=0; i<gridAsArray.length; i++) {
+    // some amount of array index arithmetic required here
+    // go through each element the gaol array, if the current board is not correct
+    // for the element, locate the element in the current board array
+
+    // only do this once and store result
+    if (this.manhattan == 0 && !this.isGoal()) {
+      int moves = 0;
+
+      // calculate hamming
+      for (int i = 0; i < gridAsArray.length; i++) {
         if (goalBoard.gridAsArray[i] != 0 && (goalBoard.gridAsArray[i] != this.gridAsArray[i])) {
-          //locate the target element in this board
-          for (int x=0; x<gridAsArray.length; x++) {
+          // locate the target element in this board
+          for (int x = 0; x < gridAsArray.length; x++) {
             if (goalBoard.gridAsArray[i] == gridAsArray[x]) {
-              //calculate the differences between the array indices to get the moves required
-              int rowMove = Math.abs((i/dimension) - (x/dimension));
-              int colMove = Math.abs((i%dimension) - (x%dimension));
-              
-              //add to moves count
+              // calculate the differences between the array indices to get the moves required
+              int rowMove = Math.abs((i / dimension) - (x / dimension));
+              int colMove = Math.abs((i % dimension) - (x % dimension));
+
+              // add to moves count
               moves += rowMove + colMove;
             }
-              
+
           }
         }
       }
+      this.manhattan = moves;
     }
-    
-    this.manhattan = moves;
-    
+
     return manhattan;
 
   }
 
   /**
-   * Is this board the goal board?
-   * We would use the Singleton() pattern (double-checked locking) here, but no concurrency issues here
+   * Is this board the goal board? We would use the Singleton() pattern (double-checked locking)
+   * here, but no concurrency issues here
+   * 
    * @return true/false
    */
   public boolean isGoal() {
-    if (Board.goalBoard == null)
+    if (this.goalBoard == null)
       this.generateGoalBoard(gridAsArray);
-    
-    //now it's simply a matter of comparing this Board with the static goal Board
-    return this.equals(Board.goalBoard);
+
+    // now it's simply a matter of comparing this Board with the static goal Board
+    return this.equals(this.goalBoard);
 
   }
 
@@ -229,37 +228,38 @@ public class Board {
    * @return Board
    */
   public Board twin() {
-    //obtain twin by swapping any pair of elements (except zero (0))
-    //make a copy
-    int[] tempArr = Arrays.copyOf(gridAsArray, gridAsArray.length);
-    
-    //swap random elements 
-    int swap0, swap1;
-    
-    swap0 = StdRandom.uniform((int)Math.pow(dimension, 2));
-    swap1 = StdRandom.uniform((int)Math.pow(dimension, 2));
+    if (this.twinBoard == null) {
+      // obtain twin by swapping any pair of elements (except zero (0))
+      // make a copy
+      int[] tempArr = Arrays.copyOf(gridAsArray, gridAsArray.length);
 
-    //check that different elements selected and that neither is 0
-    while (swap0 == swap1 && tempArr[swap0] != 0 && tempArr[swap1] != 0) {
-      swap0 = StdRandom.uniform((int)Math.pow(dimension, 2));
-      swap1 = StdRandom.uniform((int)Math.pow(dimension, 2));
+      // swap random elements
+      int swap0, swap1;
+
+      swap0 = StdRandom.uniform((int) Math.pow(dimension, 2));
+      swap1 = StdRandom.uniform((int) Math.pow(dimension, 2));
+
+      // check that different elements selected and that neither is 0
+      while (swap0 == swap1 || (tempArr[swap0] == 0 || tempArr[swap1] == 0)) {
+        swap0 = StdRandom.uniform((int) Math.pow(dimension, 2));
+        swap1 = StdRandom.uniform((int) Math.pow(dimension, 2));
+      }
+
+      // now swap them
+      int temp = tempArr[swap0];
+      tempArr[swap0] = tempArr[swap1];
+      tempArr[swap1] = temp;
+
+      this.twinBoard = new Board(Board.inflateArray(tempArr));
     }
-    
-    //now swap them 
-    int temp = tempArr[swap0];
-    tempArr[swap0] = tempArr[swap1];
-    tempArr[swap1] = temp;
-    
-    //and return new Board instance
-    return new Board(Board.inflateArray(tempArr));
-    
+
+    // and return new Board instance
+    return twinBoard;
+
   }
 
   /**
-   * Does this board equal y The only way to truly know this is to compare every array index with
-   * it's equivalent - will try with a public grid member first If this is not permitted, then it
-   * means that equivalence is based on some other intrinsic property exposed by the public
-   * interface.
+   * Does this board equal y
    * 
    * @ereturn true/false
    */
@@ -279,13 +279,13 @@ public class Board {
       return false;
 
     Board tempBoard = (Board) y;
-    
+
     if (tempBoard.gridAsArray == null)
-        return false;
-    
+      return false;
+
     for (int i = 0; i < Math.pow(dimension, 2); i++) {
-       if (this.gridAsArray[i] != tempBoard.gridAsArray[i])
-          return false;
+      if (this.gridAsArray[i] != tempBoard.gridAsArray[i])
+        return false;
     }
 
     return true;
@@ -300,98 +300,96 @@ public class Board {
   public Iterable<Board> neighbors() {
     return this.generateNeighbours();
   }
-  
+
   /**
    * Helper method to generate the collection of neighbour boards
+   * 
    * @return
    */
-  private Stack<Board> generateNeighbours () {
-    
+  private Stack<Board> generateNeighbours() {
+
     Stack<Board> store = new Stack<>();
-    
-    //find the zero (0) item - this will be the pivot around which other 
-    //elements will move to create the neighbours
+
+    // find the zero (0) item - this will be the pivot around which other
+    // elements will move to create the neighbours
     int row = 0;
     int col = 0;
     int count;
-    
-    for (count=0; count<gridAsArray.length; count++) {
+
+    for (count = 0; count < gridAsArray.length; count++) {
       if (gridAsArray[count] == 0) {
-        //index arithmetic
-        row = count/dimension;
-        col = count%dimension;
+        // index arithmetic
+        row = count / dimension;
+        col = count % dimension;
         break;
       }
     }
-    
-    //now add and subtract 1 from each row and col index to get the element to swap with
-    //but only if the resulting index is within the bounds of the 2D array
-    //this can be optimized by reinstating the orginal state of the grid instead of creating
-    //a new copy to work on each time
-    
-    int [] tempArr;
-    
-    //row-1
-    if (row-1 >= 0 && row-1 <= dimension-1) {
-      //copy array
+
+    // now add and subtract 1 from each row and col index to get the element to swap with
+    // but only if the resulting index is within the bounds of the 2D array
+    // this can be optimized by reinstating the orginal state of the grid instead of creating
+    // a new copy to work on each time
+
+    int[] tempArr;
+
+    // row-1
+    if (row - 1 >= 0 && row - 1 <= dimension - 1) {
+      // copy array
       tempArr = Arrays.copyOf(gridAsArray, gridAsArray.length);
-      
-      //swap elements
-      int temp = gridAsArray[count];
-      tempArr[count] = tempArr[((row-1)*dimension)+col];
-      tempArr[((row-1)*dimension)+col] = temp;
+
+      // swap elements
+      int temp = tempArr[count];
+      tempArr[count] = tempArr[((row - 1) * dimension) + col];
+      tempArr[((row - 1) * dimension) + col] = temp;
       store.push(new Board(Board.inflateArray(tempArr)));
     }
-    
-    //row+1
-    if (row+1 >= 0 && row+1 <= dimension-1) {
-      //copy array
+
+    // row+1
+    if (row + 1 >= 0 && row + 1 <= dimension - 1) {
+      // copy array
       tempArr = Arrays.copyOf(gridAsArray, gridAsArray.length);
-     
-      int temp = gridAsArray[count];
-      tempArr[count] = tempArr[((row+1)*dimension)+col];
-      tempArr[((row+1)*dimension)+col] = temp;
+
+      int temp = tempArr[count];
+      tempArr[count] = tempArr[((row + 1) * dimension) + col];
+      tempArr[((row + 1) * dimension) + col] = temp;
       store.push(new Board(Board.inflateArray(tempArr)));
     }
-    
-    //col-1
-    if (col-1 >= 0 && col-1 <= dimension-1) {
-      //copy array
+
+    // col-1
+    if (col - 1 >= 0 && col - 1 <= dimension - 1) {
+      // copy array
       tempArr = Arrays.copyOf(gridAsArray, gridAsArray.length);
-      
-      //swap elements
-      int temp = gridAsArray[count];
-      tempArr[count] = tempArr[((row)*dimension)+col-1];
-      tempArr[((row)*dimension)+col-1] = temp;
+
+      // swap elements
+      int temp = tempArr[count];
+      tempArr[count] = tempArr[((row) * dimension) + col - 1];
+      tempArr[((row) * dimension) + col - 1] = temp;
       store.push(new Board(Board.inflateArray(tempArr)));
     }
-    
-    //col+1
-    if (col+1 >= 0 && col+1 <= dimension-1) {
-      //copy array
+
+    // col+1
+    if (col + 1 >= 0 && col + 1 <= dimension - 1) {
+      // copy array
       tempArr = Arrays.copyOf(gridAsArray, gridAsArray.length);
-     
-      int temp = gridAsArray[count];
-      tempArr[count] = tempArr[((row)*dimension)+col+1];
-      tempArr[((row)*dimension)+col+1] = temp;
+
+      int temp = tempArr[count];
+      tempArr[count] = tempArr[((row) * dimension) + col + 1];
+      tempArr[((row) * dimension) + col + 1] = temp;
       store.push(new Board(Board.inflateArray(tempArr)));
     }
-    
+
     return store;
-    
+
   }
 
   /**
-   * String representation of this board (in the output format specified below) 
-   * eg: 3 
-   *      1 0 3 
-   *      4 2 5
-   *      7 8 6
+   * String representation of this board (in the output format specified below) eg: 3 1 0 3 4 2 5 7
+   * 8 6
    */
   public String toString() {
-    
+
     int[][] grid = Board.inflateArray(this.gridAsArray);
-    
+
     StringBuilder s = new StringBuilder();
 
     s.append(dimension + "\n");
